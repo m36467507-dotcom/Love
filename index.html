@@ -63,7 +63,7 @@
 <body>
 <div class="phone">
   <div class="stars" id="stars"></div>
-  <audio id="song" src="song.mp3" loop preload="auto"></audio>
+  <audio id="song" src="https://files.catbox.moe/hyl34j.mp3" loop preload="auto"></audio>
 
   <div id="lock">
     <div class="moon"></div>
@@ -153,9 +153,20 @@
   // الموسيقى
   var song=document.getElementById('song'),vinyl=document.getElementById('vinyl'),playing=false;
   function playSong(){song.play().then(function(){playing=true;vinyl.classList.add('spin');}).catch(function(){});}
-  vinyl.addEventListener('click',function(){
-    if(playing){song.pause();playing=false;vinyl.classList.remove('spin');}else playSong();
+  // لو song.mp3 مش موجودة جنب الملف، الأسطوانة بتفتح اختيار أغنية من الموبايل
+  var picker=document.createElement('input');
+  picker.type='file';picker.accept='audio/*';picker.style.display='none';
+  document.body.appendChild(picker);
+  picker.addEventListener('change',function(){
+    if(picker.files&&picker.files[0]){song.src=URL.createObjectURL(picker.files[0]);song.load();playSong();}
   });
+  function songMissing(){return !!song.error||song.networkState===3;}
+  vinyl.addEventListener('click',function(){
+    if(playing){song.pause();playing=false;vinyl.classList.remove('spin');}
+    else if(songMissing()){picker.click();}
+    else playSong();
+  });
+  song.addEventListener('error',function(){playing=false;vinyl.classList.remove('spin');});
 </script>
 </body>
 </html>
