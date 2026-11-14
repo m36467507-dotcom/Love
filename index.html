@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Rafqahh</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0d0712;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'Segoe UI', Georgia, serif}
+  .container{width:100%;max-width:390px;height:720px;background:linear-gradient(180deg,#2a0a1e 0%, #4a0e2e 35%, #1c0620 100%);border-radius:24px;position:relative;overflow:hidden;text-align:center;color:#fff}
+
+  /* LOCK */
+  #lock{position:absolute;inset:0;background:linear-gradient(180deg,#3b0a24 0%, #2a0a3d 55%, #150618 100%);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px}
+  #lock.hide{display:none}
+  .lock-line{width:48px;height:2px;background:#c9a6ff;margin-bottom:22px}
+  .lock-title{font-size:34px;color:#fff;font-weight:300;letter-spacing:1px;margin-bottom:6px}
+  .lock-title b{color:#d8b4ff;font-weight:600}
+  .lock-sub{color:#c9a6a2;font-size:11px;letter-spacing:4px;margin-bottom:32px}
+  .pass-input{width:100%;max-width:260px;padding:15px 18px;border-radius:12px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font-size:16px;text-align:center;outline:none}
+  .pass-input::placeholder{color:rgba(255,255,255,.45)}
+  .pass-btn{margin-top:16px;background:linear-gradient(90deg,#7b1e3b,#6a2a7a);color:#fff;border:none;padding:14px 48px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;letter-spacing:1px}
+  .pass-error{color:#ffb3c1;font-size:13px;margin-top:12px;min-height:18px}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+  .shake{animation:shake .3s}
+
+  .page{display:none;height:100%;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:2;padding:28px}
+  .page:target{display:flex}
+  #p1{display:flex}
+
+  /* PAGE 1 */
+  .p1-top{font-size:11px;letter-spacing:5px;color:#d8b4ff;margin-bottom:8px}
+  .p1-title{font-size:42px;font-weight:300;line-height:1.1;margin-bottom:6px}
+  .p1-title b{color:#e8c8ff;font-weight:700}
+  .p1-sub{font-size:13px;color:#e5c9d1;margin-bottom:30px;line-height:1.6}
+  .env-check{display:none}
+  .envelope{width:330px;height:225px;position:relative;cursor:pointer;display:block;filter:drop-shadow(0 20px 30px rgba(0,0,0,.5));z-index:2}
+  .env-body{position:absolute;inset:0;background:linear-gradient(160deg,#6d1230 0%, #4a0a2b 60%, #2e0730 100%);border-radius:16px;border:1px solid rgba(255,255,255,.18)}
+  .env-letter{position:absolute;top:10px;left:14px;width:302px;height:205px;background:#fdf8ff;border-radius:10px;z-index:3;transition:.9s;padding:18px;color:#2a122e;font-size:12.5px;line-height:1.6;text-align:left;display:flex;flex-direction:column;justify-content:flex-start;overflow-y:auto}
+  .env-letter b{color:#6d1230;font-size:15px}
+  .env-letter .line{height:1px;background:#d8b4ff;margin:8px 0}
+  .env-pocket{position:absolute;bottom:0;left:0;width:100%;height:145px;background:linear-gradient(180deg,#7b1e3b,#3a0a3d);z-index:4;clip-path:polygon(0 0,50% 58%,100% 0,100% 100%,0 100%);border-radius:0 0 16px 16px}
+  .env-flap{position:absolute;top:0;left:0;width:100%;height:125px;background:linear-gradient(180deg,#8a2442,#4b1150);clip-path:polygon(0 0,100% 0,50% 100%);z-index:5;transform-origin:top;transition:.9s;border-radius:16px 16px 0 0}
+  .seal{position:absolute;top:98px;left:50%;transform:translateX(-50%);width:58px;height:58px;background:linear-gradient(135deg,#d8b4ff,#8a2442);border-radius:50%;z-index:7;display:flex;align-items:center;justify-content:center;transition:.3s;color:#fff;font-size:20px;font-weight:bold;border:2px solid rgba(255,255,255,.6)}
+  .env-check:checked + .envelope .env-flap{transform:rotateX(180deg);z-index:1}
+  .env-check:checked + .envelope .env-letter{transform:translateY(-42px);z-index:6}
+  .env-check:checked + .envelope .seal{opacity:0;transform:translateX(-50%) scale(.3)}
+  .hint{margin-top:18px;color:#d8b4ff;font-size:11px;letter-spacing:2px}
+  .next-btn{margin-top:18px;background:#fff;color:#2a0a3d;text-decoration:none;padding:13px 42px;border-radius:12px;font-weight:700;font-size:14px}
+
+  /* PHOTO PAGES */
+  .photo-page{position:absolute;inset:0}
+  .photo-page img{width:100%;height:100%;object-fit:cover}
+  .photo-page::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(42,6,32,.10) 0%, transparent 35%, rgba(20,4,28,.75) 75%, rgba(10,2,16,.95) 100%);z-index:2}
+  .badge{position:absolute;top:20px;left:20px;z-index:5;background:rgba(255,255,255,.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.25);padding:8px 14px;border-radius:99px;font-size:11px;letter-spacing:2px}
+  .photo-content{position:absolute;left:24px;right:24px;bottom:92px;z-index:5;text-align:left}
+  .photo-content .kicker{font-size:11px;letter-spacing:4px;color:#e8c8ff;margin-bottom:10px}
+  .photo-content h2{font-size:36px;line-height:1.1;font-weight:300;margin-bottom:12px}
+  .photo-content h2 b{font-weight:700;color:#fff}
+  .photo-content p{font-size:15px;line-height:1.7;color:rgba(255,255,255,.9);max-width:310px}
+  .date-pill{display:inline-block;margin-top:12px;background:#fff;color:#2a0a3d;padding:7px 14px;border-radius:99px;font-size:12px;font-weight:700}
+  .nav-row{position:absolute;left:22px;right:22px;bottom:28px;z-index:6;display:flex;justify-content:space-between;align-items:center}
+  .nav-row a{color:#fff;text-decoration:none;font-size:13px;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);padding:11px 20px;border-radius:12px;border:1px solid rgba(255,255,255,.3)}
+  .nav-row a.main{background:#fff;color:#2a0a3d;border:none;font-weight:700}
+  .music-btn{position:absolute;top:16px;right:16px;z-index:20;width:38px;height:38px;border-radius:12px;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:16px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="container">
+  <audio id="song" src="song.mp3" loop preload="auto"></audio>
+  <button class="music-btn" id="musicBtn">♫</button>
+
+  <div id="lock">
+    <div class="lock-line"></div>
+    <div class="lock-title">For <b>Rafqahh</b></div>
+    <div class="lock-sub">PRIVATE • FOR YOU ONLY</div>
+    <input type="password" id="passInput" class="pass-input" placeholder="الباسورد">
+    <button class="pass-btn" id="passBtn">Open</button>
+    <div class="pass-error" id="passError"></div>
+  </div>
+
+  <div class="page" id="p1">
+    <div class="p1-top">FOR RAFQAHH</div>
+    <div class="p1-title">A letter<br><b>for you</b></div>
+    <div class="p1-sub">اضغطي على الظرف عشان تقري اللي جواه</div>
+    <input type="checkbox" id="openEnv" class="env-check">
+    <label for="openEnv" class="envelope">
+      <div class="env-body"></div>
+      <div class="env-letter"><b>For Rafqahh</b><div class="line"></div>
+      I wanted to tell you something, but honestly, I don't know if you'll understand me.<br><br>
+      I miss you so much, every little detail about you… your voice, your features, your beautiful smile that I could never get enough of.<br><br>
+      I miss our days together, our conversations, and the nights we spent talking.<br><br>
+      You know, I wanted to tell you that your presence meant so much to me, and your absence has affected me more than you could ever imagine.<br><br>
+      You left me with so many beautiful memories, but where are you now? Where did all your promises go? You told me you'd never leave me or abandon me like everyone else. Where did all those words go?<br><br>
+      I know my words might not mean anything to you anymore, but what can I do? I have no control over a heart that truly loved you and still misses you, even after all this time.
+      </div>
+      <div class="env-pocket"></div><div class="env-flap"></div>
+      <div class="seal">R</div>
+    </label>
+    <div class="hint">TAP TO OPEN</div>
+    <a href="#p2" class="next-btn">Next →</a>
+  </div>
+
+  <div class="page" id="p2">
+    <div class="photo-page"><img src="photo1.jpg" alt="Rafqahh"></div>
+    <div class="badge">01 • THE BEGINNING</div>
+    <div class="photo-content">
+      <div class="kicker">THE DAY WE MET</div>
+      <h2>The day<br><b>we met</b></h2>
+      <p>The day we met each other. I never knew that day would change everything in my life.</p>
+      <span class="date-pill">1 / 10 / 2025</span>
+    </div>
+    <div class="nav-row"><a href="#p1">Back</a><a href="#p3" class="main">Next →</a></div>
+  </div>
+
+  <div class="page" id="p3">
+    <div class="photo-page"><img src="photo2.jpg" alt="Rafqahh"></div>
+    <div class="badge">02 • FIRST MEETING</div>
+    <div class="photo-content">
+      <div class="kicker">FIRST TIME WE MET</div>
+      <h2>Our first<br><b>meeting</b></h2>
+      <p>I still remember every detail of that day, your smile, your voice.</p>
+      <span class="date-pill">22 / 3 / 2026</span>
+    </div>
+    <div class="nav-row"><a href="#p2">Back</a><a href="#p4" class="main">Next →</a></div>
+  </div>
+
+  <div class="page" id="p4">
+    <div class="photo-page"><img src="photo3.jpg" alt="Rafqahh"></div>
+    <div class="badge">03 • STILL YOU</div>
+    <div class="photo-content">
+      <div class="kicker">EVEN NOW</div>
+      <h2>Still<br><b>you</b></h2>
+      <p>Even after all this time, my heart still misses you. You are still the one I think about.</p>
+    </div>
+    <div class="nav-row"><a href="#p3">Back</a><a href="#p1" class="main">Replay ↺</a></div>
+  </div>
+
+</div>
+<script>
+  function checkPass(){
+    var v = document.getElementById('passInput').value.trim();
+    if(v === 'رفقهه' || v.toLowerCase() === 'rafqahh'){ document.getElementById('lock').classList.add('hide'); }
+    else {
+      var inp = document.getElementById('passInput');
+      inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake');
+      document.getElementById('passError').textContent = 'Wrong password, try again';
+      inp.value=''; inp.focus();
+    }
+  }
+  document.getElementById('passBtn').addEventListener('click', checkPass);
+  document.getElementById('passInput').addEventListener('keydown', function(e){ if(e.key==='Enter'){ checkPass(); } });
+  var song = document.getElementById('song');
+  var musicBtn = document.getElementById('musicBtn');
+  var isPlaying = false;
+  function playSong(){ song.play().then(function(){ isPlaying=true; musicBtn.textContent='❚❚'; }).catch(function(){}); }
+  function toggleSong(){ if(isPlaying){ song.pause(); isPlaying=false; musicBtn.textContent='♫'; } else { playSong(); } }
+  document.getElementById('openEnv').addEventListener('change', function(){ if(this.checked){ playSong(); } });
+  musicBtn.addEventListener('click', toggleSong);
+</script>
+</body>
+</html>
