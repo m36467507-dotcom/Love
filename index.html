@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
 <title>For Rafqahh</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
@@ -63,7 +64,7 @@
 <body>
 <div class="phone">
   <div class="stars" id="stars"></div>
-  <audio id="song" src="https://files.catbox.moe/hyl34j.mp3" loop preload="auto"></audio>
+  <audio id="song" loop preload="auto" playsinline></audio>
 
   <div id="lock">
     <div class="moon"></div>
@@ -152,21 +153,36 @@
 
   // الموسيقى
   var song=document.getElementById('song'),vinyl=document.getElementById('vinyl'),playing=false;
-  function playSong(){song.play().then(function(){playing=true;vinyl.classList.add('spin');}).catch(function(){});}
+  var srcs=['song.mp3','https://files.catbox.moe/hyl34j.mp3'],si=0,failed=false,wantPlay=false;
+  var toast=document.createElement('div');
+  toast.style.cssText='position:absolute;top:88px;left:50%;transform:translateX(-50%);z-index:60;background:rgba(0,0,0,.8);color:#fff;padding:9px 16px;border-radius:99px;font-size:12px;display:none;white-space:nowrap';
+  document.querySelector('.phone').appendChild(toast);
+  function showToast(t){toast.textContent=t;toast.style.display='block';setTimeout(function(){toast.style.display='none';},4500);}
+  function ok(){playing=true;vinyl.classList.add('spin');}
+  function tryPlay(){var p=song.play();if(p&&p.then){p.then(ok).catch(function(){});}}
+  function setSrc(){song.src=srcs[si];song.load();}
+  // لو الأغنية لسه بتتحمل وقت الضغطة، تشتغل أول ما تجهز
+  song.addEventListener('canplay',function(){if(wantPlay&&!playing)tryPlay();});
+  // لو اللينك فشل نجرب song.mp3 جنب الملف، ولو فشل برضو نعرض رسالة
+  song.addEventListener('error',function(){
+    if(si<srcs.length-1){si++;setSrc();}
+    else{failed=true;playing=false;vinyl.classList.remove('spin');showToast('الأغنية ما اتحمّلتش — اضغطي الأسطوانة واختاري الملف');}
+  });
+  function playSong(){wantPlay=true;tryPlay();}
+  setSrc();
   // لو song.mp3 مش موجودة جنب الملف، الأسطوانة بتفتح اختيار أغنية من الموبايل
   var picker=document.createElement('input');
   picker.type='file';picker.accept='audio/*';picker.style.display='none';
   document.body.appendChild(picker);
   picker.addEventListener('change',function(){
-    if(picker.files&&picker.files[0]){song.src=URL.createObjectURL(picker.files[0]);song.load();playSong();}
+    if(picker.files&&picker.files[0]){failed=false;song.src=URL.createObjectURL(picker.files[0]);song.load();playSong();}
   });
-  function songMissing(){return !!song.error||song.networkState===3;}
+  function songMissing(){return failed;}
   vinyl.addEventListener('click',function(){
-    if(playing){song.pause();playing=false;vinyl.classList.remove('spin');}
+    if(playing){wantPlay=false;song.pause();playing=false;vinyl.classList.remove('spin');}
     else if(songMissing()){picker.click();}
     else playSong();
   });
-  song.addEventListener('error',function(){playing=false;vinyl.classList.remove('spin');});
 </script>
 </body>
 </html>
